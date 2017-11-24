@@ -1,0 +1,29 @@
+{
+  "name": "bankbot",
+  "version": "1.0.0",
+  "description": "npm bank package",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sparkstream/BankBot.git"
+  },
+  "keywords": [
+    "bank",
+    "bot",
+    "contoso",
+    "limited"
+  ],
+  "author": "Phillip Quach",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Sparkstream/BankBot/issues"
+  },
+  "homepage": "https://github.com/Sparkstream/BankBot#readme",
+  "dependencies": {
+    "botbuilder": "^3.12.0",
+    "restify": "^6.3.4"
+  }
+}
