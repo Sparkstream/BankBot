@@ -47,6 +47,7 @@ exports.startDialog = function (bot) {
                                 }
                                 session.send("%s %s is worth  %s %s ",currencyValue,fromCurrency,equivalentValue,toCurrency);
                             },fromCurrency)
+                            
                             return;
                            }
                            session.send(new builder.Message(session).addAttachment({
@@ -203,5 +204,21 @@ exports.startDialog = function (bot) {
 
     }]).triggerAction({
         matches: 'GetExchangeRates'
+    });
+
+    bot.dialog('SetBaseCurrency',[function(session){
+        if(!session.conversationData["baseCurrency"]){
+            builder.Prompts.choice(session, "Would you like to set your base currency", "Yes|No", { listStyle: builder.ListStyle.button });
+        }else{
+            next();
+        }
+    }, function(session,results,next){
+        if(results.response){
+            session.send("You have chosen %s",results.response.entity);
+        }
+    }
+
+    ]).triggerAction({
+        matches: 'SetBaseCurrency'
     });
 }
