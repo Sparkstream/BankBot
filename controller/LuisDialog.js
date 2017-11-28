@@ -1,6 +1,6 @@
 var builder = require('botbuilder');
 var currency = require('./Currency');
-var cs=require('./CognitiveServices');
+//var cs=require('./CognitiveServices');
 
 exports.startDialog = function (bot) {
 
@@ -12,29 +12,23 @@ exports.startDialog = function (bot) {
     bot.recognizer(recognizer);
 
     bot.dialog('ConvertCurrency',
-        [function (session, args, next) {
+        function (session, args, next) {
             session.dialogData.args = args || {};
 
-            supportedCurrencies = [];
-            exchangeRateList = [];
-
             //Obtains the supported currencies and a list of them
-
-            currency.displayAvailableCurrencies(session,
-                function (currencyList, exchangeRates) {
-                    
-                    session.sendTyping();
+            //session.sendTyping();
+            //setTimeout(function () {
+                currency.displayAvailableCurrencies(session, function (currencyList, exchangeRates, session) {
+                    //session.sendTyping();
+                    //setTimeout(function(){
                     if (session.message && session.message.value) {
                         // process your card's submit action
                         var fromCurrency = session.message.value.sourceCurrency;
                         var toCurrency = session.message.value.destinationCurrency;
                         var currencyValue = session.message.value.number;
-                        currency.getExchangeRatesList(session, function (currencyList, exchangeRates
+                        var equivalentValue;
+                        currency.getExchangeRatesList(session, function (currencyList, exchangeRates) {
 
-                        ) {
-                            if (fromCurrency == toCurrency) {
-                                session.send("%s %s is worth  %s %s ", currencyValue, fromCurrency, currencyValue, toCurrency);
-                            }
                             for (var dest in currencyList) {
 
                                 if (toCurrency == currencyList[dest]) {
@@ -42,12 +36,17 @@ exports.startDialog = function (bot) {
                                     equivalentValue *= currencyValue;
                                 }
 
+                            } if (fromCurrency == toCurrency) {
+                                session.send("%s %s is worth  %s %s ", currencyValue, fromCurrency, currencyValue, toCurrency);
+                            } else {
+                                session.send("%s %s is worth  %s %s ", currencyValue, fromCurrency, equivalentValue.toFixed(4), toCurrency);
                             }
-                            session.send("%s %s is worth  %s %s ", currencyValue, fromCurrency, equivalentValue.toFixed(4), toCurrency);
                         }, fromCurrency)
-
+                        console.log("Processing");
                         return;
-                    }
+
+                    };
+
                     session.send(new builder.Message(session).addAttachment({
                         contentType: "application/vnd.microsoft.card.adaptive",
                         content: {
@@ -100,7 +99,113 @@ exports.startDialog = function (bot) {
                                                         {
                                                             "title": currencyList[2],
                                                             "value": currencyList[2]
+                                                        },{
+                                                            "title": currencyList[3],
+                                                            "value": currencyList[3]
+                                                        },
+                                                        {
+                                                            "title": currencyList[4],
+                                                            "value": currencyList[4]
+                                                        },
+                                                        {
+                                                            "title": currencyList[5],
+                                                            "value": currencyList[5]
+                                                        },
+                                                        {
+                                                            "title": currencyList[6],
+                                                            "value": currencyList[6]
+                                                        },
+                                                        {
+                                                            "title": currencyList[7],
+                                                            "value": currencyList[7]
+                                                        },
+                                                        {
+                                                            "title": currencyList[8],
+                                                            "value": currencyList[8]
+                                                        },
+                                                        {
+                                                            "title": currencyList[9],
+                                                            "value": currencyList[9]
+                                                        },
+                                                        {
+                                                            "title": currencyList[10],
+                                                            "value": currencyList[10]
+                                                        },
+                                                        {
+                                                            "title": currencyList[11],
+                                                            "value": currencyList[11]
+                                                        },
+                                                        {
+                                                            "title": currencyList[12],
+                                                            "value": currencyList[12]
+                                                        },{
+                                                            "title": currencyList[13],
+                                                            "value": currencyList[13]
+                                                        },
+                                                        {
+                                                            "title": currencyList[14],
+                                                            "value": currencyList[14]
+                                                        },
+                                                        {
+                                                            "title": currencyList[15],
+                                                            "value": currencyList[15]
+                                                        },
+                                                        {
+                                                            "title": currencyList[16],
+                                                            "value": currencyList[16]
+                                                        },
+                                                        {
+                                                            "title": currencyList[17],
+                                                            "value": currencyList[17]
+                                                        },
+                                                        {
+                                                            "title": currencyList[18],
+                                                            "value": currencyList[18]
+                                                        },
+                                                        {
+                                                            "title": currencyList[19],
+                                                            "value": currencyList[19]
+                                                        },
+                                                        {
+                                                            "title": currencyList[20],
+                                                            "value": currencyList[20]
+                                                        },
+                                                        {
+                                                            "title": currencyList[21],
+                                                            "value": currencyList[21]
+                                                        },
+                                                        {
+                                                            "title": currencyList[22],
+                                                            "value": currencyList[22]
+                                                        },{
+                                                            "title": currencyList[23],
+                                                            "value": currencyList[23]
+                                                        },
+                                                        {
+                                                            "title": currencyList[24],
+                                                            "value": currencyList[24]
+                                                        },
+                                                        {
+                                                            "title": currencyList[25],
+                                                            "value": currencyList[25]
+                                                        },
+                                                        {
+                                                            "title": currencyList[26],
+                                                            "value": currencyList[26]
+                                                        },
+                                                        {
+                                                            "title": currencyList[27],
+                                                            "value": currencyList[27]
+                                                        },
+                                                        {
+                                                            "title": currencyList[28],
+                                                            "value": currencyList[28]
+                                                        },
+                                                        {
+                                                            "title": currencyList[29],
+                                                            "value": currencyList[29]
                                                         }
+                                                        
                                                     ]
 
                                                 }
@@ -131,6 +236,111 @@ exports.startDialog = function (bot) {
                                                         {
                                                             "title": currencyList[2],
                                                             "value": currencyList[2]
+                                                        },{
+                                                            "title": currencyList[3],
+                                                            "value": currencyList[3]
+                                                        },
+                                                        {
+                                                            "title": currencyList[4],
+                                                            "value": currencyList[4]
+                                                        },
+                                                        {
+                                                            "title": currencyList[5],
+                                                            "value": currencyList[5]
+                                                        },
+                                                        {
+                                                            "title": currencyList[6],
+                                                            "value": currencyList[6]
+                                                        },
+                                                        {
+                                                            "title": currencyList[7],
+                                                            "value": currencyList[7]
+                                                        },
+                                                        {
+                                                            "title": currencyList[8],
+                                                            "value": currencyList[8]
+                                                        },
+                                                        {
+                                                            "title": currencyList[9],
+                                                            "value": currencyList[9]
+                                                        },
+                                                        {
+                                                            "title": currencyList[10],
+                                                            "value": currencyList[10]
+                                                        },
+                                                        {
+                                                            "title": currencyList[11],
+                                                            "value": currencyList[11]
+                                                        },
+                                                        {
+                                                            "title": currencyList[12],
+                                                            "value": currencyList[12]
+                                                        },{
+                                                            "title": currencyList[13],
+                                                            "value": currencyList[13]
+                                                        },
+                                                        {
+                                                            "title": currencyList[14],
+                                                            "value": currencyList[14]
+                                                        },
+                                                        {
+                                                            "title": currencyList[15],
+                                                            "value": currencyList[15]
+                                                        },
+                                                        {
+                                                            "title": currencyList[16],
+                                                            "value": currencyList[16]
+                                                        },
+                                                        {
+                                                            "title": currencyList[17],
+                                                            "value": currencyList[17]
+                                                        },
+                                                        {
+                                                            "title": currencyList[18],
+                                                            "value": currencyList[18]
+                                                        },
+                                                        {
+                                                            "title": currencyList[19],
+                                                            "value": currencyList[19]
+                                                        },
+                                                        {
+                                                            "title": currencyList[20],
+                                                            "value": currencyList[20]
+                                                        },
+                                                        {
+                                                            "title": currencyList[21],
+                                                            "value": currencyList[21]
+                                                        },
+                                                        {
+                                                            "title": currencyList[22],
+                                                            "value": currencyList[22]
+                                                        },{
+                                                            "title": currencyList[23],
+                                                            "value": currencyList[23]
+                                                        },
+                                                        {
+                                                            "title": currencyList[24],
+                                                            "value": currencyList[24]
+                                                        },
+                                                        {
+                                                            "title": currencyList[25],
+                                                            "value": currencyList[25]
+                                                        },
+                                                        {
+                                                            "title": currencyList[26],
+                                                            "value": currencyList[26]
+                                                        },
+                                                        {
+                                                            "title": currencyList[27],
+                                                            "value": currencyList[27]
+                                                        },
+                                                        {
+                                                            "title": currencyList[28],
+                                                            "value": currencyList[28]
+                                                        },
+                                                        {
+                                                            "title": currencyList[29],
+                                                            "value": currencyList[29]
                                                         }
                                                     ]
 
@@ -143,7 +353,7 @@ exports.startDialog = function (bot) {
                             "actions": [
                                 {
                                     "type": "Action.Submit",
-                                    "title": "ConvertCurrency",
+                                    "title": "Convert Currency",
                                     "data": {
                                         "type": "CurrencyConversion"
                                     }
@@ -152,13 +362,13 @@ exports.startDialog = function (bot) {
 
                         }
                     }))
-
+                //},3000);
                 })
+            //}, 3000);
         }
-
-        ]).triggerAction({
-            matches: 'ConvertCurrency'
-        });
+    ).triggerAction({
+        matches: 'ConvertCurrency'
+    });
 
     bot.dialog('WelcomeIntent', function (session, args) {
 
@@ -206,7 +416,7 @@ exports.startDialog = function (bot) {
 
         function (session, args, next) {
 
-            session.dialogData.args = args || {};   
+            session.dialogData.args = args || {};
 
             if (!session.conversationData["username"]) {
                 builder.Prompts.text(session, "To continue, please enter a username so we can identify you");
@@ -214,13 +424,13 @@ exports.startDialog = function (bot) {
                 next();
             }
 
-        }, 
-        function (session,results, next) {
-           
-            if(results.response){
-                
+        },
+        function (session, results, next) {
+
+            if (results.response) {
+
                 //results.response.entity = results.response.entitytoUpperCase();
-                session.conversationData["username"]=results.response;
+                session.conversationData["username"] = results.response;
             }
 
             if (!session.conversationData["baseCurrency"]) {
@@ -228,10 +438,10 @@ exports.startDialog = function (bot) {
             } else {
                 next();
             }
-        }, 
+        },
         function (session, results, next) {
 
-            if(results.response){
+            if (results.response) {
 
                 var optionSelected = results.response.entity;
                 var currencyEntity = builder.EntityRecognizer.findEntity(session.dialogData.args.intent.entities, 'currency');
@@ -254,8 +464,8 @@ exports.startDialog = function (bot) {
         matches: 'SetBaseCurrency'
     });
 
-    bot.dialog('GetBaseCurrency',[
-        
+    bot.dialog('GetBaseCurrency', [
+
         function (session, args, next) {
             session.dialogData.args = args || {};
 
@@ -266,20 +476,20 @@ exports.startDialog = function (bot) {
             }
 
         },
-        function(session,results,next){
-            if(results.response){
+        function (session, results, next) {
+            if (results.response) {
                 session.conversationData["username"] = results.response;
             }
             session.send("Extracting your currently set base currencies...");
-            currency.displayBaseCurrency(session,session.conversationData["username"]);
+            currency.displayBaseCurrency(session, session.conversationData["username"]);
         }
 
     ]).triggerAction({
         matches: 'GetBaseCurrency'
     });
 
-    bot.dialog('DeleteBaseCurrency',[
-        
+    bot.dialog('DeleteBaseCurrency', [
+
         function (session, args, next) {
             session.dialogData.args = args || {};
 
@@ -290,21 +500,21 @@ exports.startDialog = function (bot) {
             }
 
         },
-        function(session,results,next){
+        function (session, results, next) {
 
             var currencyEntity = builder.EntityRecognizer.findEntity(session.dialogData.args.intent.entities, 'currency');
 
-            if(results.response){
+            if (results.response) {
                 session.conversationData["username"] = results.response;
             }
-            session.send("Deleting %s from your base currencies. ",currencyEntity.entity);
-            currency.deleteBaseCurrency(session,session.conversationData["username"],currencyEntity.entity);
+            session.send("Deleting %s from your base currencies. ", currencyEntity.entity);
+            currency.deleteBaseCurrency(session, session.conversationData["username"], currencyEntity.entity);
 
         }
 
     ]).triggerAction({
         matches: 'DeleteBaseCurrency'
     });
-    
+
 
 }

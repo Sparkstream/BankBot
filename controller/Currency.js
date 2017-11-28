@@ -4,11 +4,11 @@ var luis = require('./LuisDialog');
 exports.displayAvailableCurrencies = function getExchangeRates(session, callback) {
 
     var url = 'https://api.fixer.io/latest';
-    rest.getExchangeRates(url, session, getExchangeRateResponseHandler(callback))
+    rest.getExchangeRates(url, session, getExchangeRateResponseHandler(callback,session))
 
 };
 
-function getExchangeRateResponseHandler(callback) {
+function getExchangeRateResponseHandler(callback,session) {
     return function (message, session) {
         var exchangeRateResponse = JSON.parse(message);
         var allCurrencies = [];
@@ -18,7 +18,7 @@ function getExchangeRateResponseHandler(callback) {
             exchangeRates.push(exchangeRateResponse.rates[index]);
         }
 
-        callback(allCurrencies, exchangeRates);
+        callback(allCurrencies, exchangeRates,session);
 
     }
 }

@@ -30,12 +30,12 @@ exports.postBaseCurrency = function postData(url,username,baseCurrency){
         }
     };
     request(options,function(err,response,body){
-        if(!error && response.statusCode === 200){
+        if(!err && response.statusCode === 200){
             console.log(body);
         }else{
             console.log(error);
         }
-    });
+    })
 };
 
 exports.getBaseCurrency = function getData(session,url,username,callback){
