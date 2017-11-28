@@ -16,11 +16,11 @@ exports.startDialog = function (bot) {
             session.dialogData.args = args || {};
 
             //Obtains the supported currencies and a list of them
-            //session.sendTyping();
-            //setTimeout(function () {
-                currency.displayAvailableCurrencies(session, function (currencyList, exchangeRates, session) {
-                    //session.sendTyping();
-                    //setTimeout(function(){
+            session.sendTyping();
+            setTimeout(function () {
+            currency.displayAvailableCurrencies(session, function (currencyList, exchangeRates, session) {
+                session.sendTyping();
+                setTimeout(function () {
                     if (session.message && session.message.value) {
                         // process your card's submit action
                         var fromCurrency = session.message.value.sourceCurrency;
@@ -99,7 +99,7 @@ exports.startDialog = function (bot) {
                                                         {
                                                             "title": currencyList[2],
                                                             "value": currencyList[2]
-                                                        },{
+                                                        }, {
                                                             "title": currencyList[3],
                                                             "value": currencyList[3]
                                                         },
@@ -138,7 +138,7 @@ exports.startDialog = function (bot) {
                                                         {
                                                             "title": currencyList[12],
                                                             "value": currencyList[12]
-                                                        },{
+                                                        }, {
                                                             "title": currencyList[13],
                                                             "value": currencyList[13]
                                                         },
@@ -177,7 +177,7 @@ exports.startDialog = function (bot) {
                                                         {
                                                             "title": currencyList[22],
                                                             "value": currencyList[22]
-                                                        },{
+                                                        }, {
                                                             "title": currencyList[23],
                                                             "value": currencyList[23]
                                                         },
@@ -205,7 +205,7 @@ exports.startDialog = function (bot) {
                                                             "title": currencyList[29],
                                                             "value": currencyList[29]
                                                         }
-                                                        
+
                                                     ]
 
                                                 }
@@ -236,7 +236,7 @@ exports.startDialog = function (bot) {
                                                         {
                                                             "title": currencyList[2],
                                                             "value": currencyList[2]
-                                                        },{
+                                                        }, {
                                                             "title": currencyList[3],
                                                             "value": currencyList[3]
                                                         },
@@ -275,7 +275,7 @@ exports.startDialog = function (bot) {
                                                         {
                                                             "title": currencyList[12],
                                                             "value": currencyList[12]
-                                                        },{
+                                                        }, {
                                                             "title": currencyList[13],
                                                             "value": currencyList[13]
                                                         },
@@ -314,7 +314,7 @@ exports.startDialog = function (bot) {
                                                         {
                                                             "title": currencyList[22],
                                                             "value": currencyList[22]
-                                                        },{
+                                                        }, {
                                                             "title": currencyList[23],
                                                             "value": currencyList[23]
                                                         },
@@ -362,159 +362,159 @@ exports.startDialog = function (bot) {
 
                         }
                     }))
-                //},3000);
-                })
-            //}, 3000);
-        }
+                }, 1000);
+            })
+        }, 1000);
+}
     ).triggerAction({
-        matches: 'ConvertCurrency'
-    });
+    matches: 'ConvertCurrency'
+});
 
-    bot.dialog('WelcomeIntent', function (session, args) {
+bot.dialog('WelcomeIntent', function (session, args) {
 
-        session.send("Konnichiwa! Hello! Namaste! \n\n Welcome to Contoso Bank Ltd's banking bot!\n\n Here's a list of tasks I may be able to assist you with.");
-        builder.Prompts.choice(session, "Please select an option from the following", "Currency Conversion|Exchange Rates|View Base Currencies", { listStyle: builder.ListStyle.button });
-        session.endDialog();
-    }).triggerAction({
-        matches: 'WelcomeIntent'
-    });
+    session.send("Konnichiwa! Hello! Namaste! \n\n Welcome to Contoso Bank Ltd's banking bot!\n\n Here's a list of tasks I may be able to assist you with.");
+    builder.Prompts.choice(session, "Please select an option from the following", "Currency Conversion|Exchange Rates|View Base Currencies", { listStyle: builder.ListStyle.button });
+    session.endDialog();
+}).triggerAction({
+    matches: 'WelcomeIntent'
+});
 
 
-    bot.dialog('GetExchangeRates', [function (session, args) {
+bot.dialog('GetExchangeRates', [function (session, args) {
+
+    session.dialogData.args = args || {};
+    //Displays to the user a list of supported currencies to view exchange rates for.
+    if (!session.dialogData["baseCurrency"]) {
+        currency.displayAvailableCurrencies(session, function (currencyList) {
+            builder.Prompts.choice(session, "To view the exchange rates, please select a supported currency from below.", currencyList, { listStyle: builder.ListStyle.button });
+        })
+    } else {
+        next();
+    }
+},
+
+//Obtains the exchange rates and presents them to the user in a list
+function (session, results, next) {
+
+    session.dialogData["baseCurrency"] = results.response;
+    var exchangeRatesList = "";
+
+    currency.getExchangeRatesList(session, function (currencyList, exchangeRates) {
+
+        for (i in currencyList) {
+            exchangeRatesList = exchangeRatesList + currencyList[i] + "\t\t" + exchangeRates[i] + "\n\n";
+        }
+        session.send("%s", exchangeRatesList);
+    }, session.dialogData["baseCurrency"].entity);
+
+
+}]).triggerAction({
+    matches: 'GetExchangeRates'
+});
+
+bot.dialog('SetBaseCurrency', [
+
+    function (session, args, next) {
 
         session.dialogData.args = args || {};
-        //Displays to the user a list of supported currencies to view exchange rates for.
-        if (!session.dialogData["baseCurrency"]) {
-            currency.displayAvailableCurrencies(session, function (currencyList) {
-                builder.Prompts.choice(session, "To view the exchange rates, please select a supported currency from below.", currencyList, { listStyle: builder.ListStyle.button });
-            })
+
+        if (!session.conversationData["username"]) {
+            builder.Prompts.text(session, "To continue, please enter a username so we can identify you");
+        } else {
+            next();
+        }
+
+    },
+    function (session, results, next) {
+
+        if (results.response) {
+
+            //results.response.entity = results.response.entitytoUpperCase();
+            session.conversationData["username"] = results.response;
+        }
+
+        if (!session.conversationData["baseCurrency"]) {
+            builder.Prompts.choice(session, "Would you like to set your base currency", "Yes|No", { listStyle: builder.ListStyle.button });
         } else {
             next();
         }
     },
-
-    //Obtains the exchange rates and presents them to the user in a list
     function (session, results, next) {
 
-        session.dialogData["baseCurrency"] = results.response;
-        var exchangeRatesList = "";
+        if (results.response) {
 
-        currency.getExchangeRatesList(session, function (currencyList, exchangeRates) {
-
-            for (i in currencyList) {
-                exchangeRatesList = exchangeRatesList + currencyList[i] + "\t\t" + exchangeRates[i] + "\n\n";
-            }
-            session.send("%s", exchangeRatesList);
-        }, session.dialogData["baseCurrency"].entity);
-
-
-    }]).triggerAction({
-        matches: 'GetExchangeRates'
-    });
-
-    bot.dialog('SetBaseCurrency', [
-
-        function (session, args, next) {
-
-            session.dialogData.args = args || {};
-
-            if (!session.conversationData["username"]) {
-                builder.Prompts.text(session, "To continue, please enter a username so we can identify you");
-            } else {
-                next();
-            }
-
-        },
-        function (session, results, next) {
-
-            if (results.response) {
-
-                //results.response.entity = results.response.entitytoUpperCase();
-                session.conversationData["username"] = results.response;
-            }
-
-            if (!session.conversationData["baseCurrency"]) {
-                builder.Prompts.choice(session, "Would you like to set your base currency", "Yes|No", { listStyle: builder.ListStyle.button });
-            } else {
-                next();
-            }
-        },
-        function (session, results, next) {
-
-            if (results.response) {
-
-                var optionSelected = results.response.entity;
-                var currencyEntity = builder.EntityRecognizer.findEntity(session.dialogData.args.intent.entities, 'currency');
-
-                if (optionSelected.toLowerCase() == "yes" && currencyEntity) {
-
-                    session.send("Setting %s as your base currency", currencyEntity.entity.toUpperCase());
-                    currency.addBaseCurrency(session, session.conversationData["username"], currencyEntity.entity.toUpperCase());
-
-                } else if (optionSelected.toLowerCase() == "no" && currencyEntity) {
-                    session.send("Cancelling the request...");
-                } else {
-                    session.send("Invalid inputs. An unsupported currency was detected or invalid code was entered. \n\n Remember to enter the currency as a 3 letter code");
-                }
-
-            }
-        }
-
-    ]).triggerAction({
-        matches: 'SetBaseCurrency'
-    });
-
-    bot.dialog('GetBaseCurrency', [
-
-        function (session, args, next) {
-            session.dialogData.args = args || {};
-
-            if (!session.conversationData["username"]) {
-                builder.Prompts.text(session, "To continue, please enter a username so we can identify you");
-            } else {
-                next();
-            }
-
-        },
-        function (session, results, next) {
-            if (results.response) {
-                session.conversationData["username"] = results.response;
-            }
-            session.send("Extracting your currently set base currencies...");
-            currency.displayBaseCurrency(session, session.conversationData["username"]);
-        }
-
-    ]).triggerAction({
-        matches: 'GetBaseCurrency'
-    });
-
-    bot.dialog('DeleteBaseCurrency', [
-
-        function (session, args, next) {
-            session.dialogData.args = args || {};
-
-            if (!session.conversationData["username"]) {
-                builder.Prompts.text(session, "To continue, please enter a username so we can identify you");
-            } else {
-                next();
-            }
-
-        },
-        function (session, results, next) {
-
+            var optionSelected = results.response.entity;
             var currencyEntity = builder.EntityRecognizer.findEntity(session.dialogData.args.intent.entities, 'currency');
 
-            if (results.response) {
-                session.conversationData["username"] = results.response;
+            if (optionSelected.toLowerCase() == "yes" && currencyEntity) {
+
+                session.send("Setting %s as your base currency", currencyEntity.entity.toUpperCase());
+                currency.addBaseCurrency(session, session.conversationData["username"], currencyEntity.entity.toUpperCase());
+
+            } else if (optionSelected.toLowerCase() == "no" && currencyEntity) {
+                session.send("Cancelling the request...");
+            } else {
+                session.send("Invalid inputs. An unsupported currency was detected or invalid code was entered. \n\n Remember to enter the currency as a 3 letter code");
             }
-            session.send("Deleting %s from your base currencies. ", currencyEntity.entity);
-            currency.deleteBaseCurrency(session, session.conversationData["username"], currencyEntity.entity);
 
         }
+    }
 
-    ]).triggerAction({
-        matches: 'DeleteBaseCurrency'
-    });
+]).triggerAction({
+    matches: 'SetBaseCurrency'
+});
+
+bot.dialog('GetBaseCurrency', [
+
+    function (session, args, next) {
+        session.dialogData.args = args || {};
+
+        if (!session.conversationData["username"]) {
+            builder.Prompts.text(session, "To continue, please enter a username so we can identify you");
+        } else {
+            next();
+        }
+
+    },
+    function (session, results, next) {
+        if (results.response) {
+            session.conversationData["username"] = results.response;
+        }
+        session.send("Extracting your currently set base currencies...");
+        currency.displayBaseCurrency(session, session.conversationData["username"]);
+    }
+
+]).triggerAction({
+    matches: 'GetBaseCurrency'
+});
+
+bot.dialog('DeleteBaseCurrency', [
+
+    function (session, args, next) {
+        session.dialogData.args = args || {};
+
+        if (!session.conversationData["username"]) {
+            builder.Prompts.text(session, "To continue, please enter a username so we can identify you");
+        } else {
+            next();
+        }
+
+    },
+    function (session, results, next) {
+
+        var currencyEntity = builder.EntityRecognizer.findEntity(session.dialogData.args.intent.entities, 'currency');
+
+        if (results.response) {
+            session.conversationData["username"] = results.response;
+        }
+        session.send("Deleting %s from your base currencies. ", currencyEntity.entity);
+        currency.deleteBaseCurrency(session, session.conversationData["username"], currencyEntity.entity);
+
+    }
+
+]).triggerAction({
+    matches: 'DeleteBaseCurrency'
+});
 
 
 }
