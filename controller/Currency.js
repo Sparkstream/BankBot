@@ -12,10 +12,12 @@ function getExchangeRateResponseHandler(callback,session) {
     return function (message, session) {
         var exchangeRateResponse = JSON.parse(message);
         var allCurrencies = [];
-        
+        var limit = 0;
         for (var index in exchangeRateResponse.rates) {
-            allCurrencies.push(index);
-            
+            if(limit<5){
+                allCurrencies.push(index);
+            }
+            limit++;
         }
 
         callback(allCurrencies,session);
