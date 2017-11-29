@@ -32,12 +32,18 @@ exports.getExchangeRatesList = function getValues(session, callback, base) {
 
 function exchangeRateValues(callback) {
     return function (message, session) {
+		
         var exchangeRateResponse = JSON.parse(message);
         var allCurrencies = [];
         var exchangeRates = [];
+		var limit = 0;
+		
         for (var index in exchangeRateResponse.rates) {
-            allCurrencies.push(index);
-            exchangeRates.push(exchangeRateResponse.rates[index]);
+			if (limit<5){
+				allCurrencies.push(index);
+				exchangeRates.push(exchangeRateResponse.rates[index]);
+			}
+			limit++;
         }
 
         callback(allCurrencies, exchangeRates);
