@@ -8,7 +8,6 @@ exports.startDialog = function (bot) {
     var recognizer = new builder.LuisRecognizer('https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/ee24ef80-3621-4db5-ab10-8285c5598cac?subscription-key=d39a0899f54148b59855da2984eeff49&verbose=true&timezoneOffset=0&q=');
     ////Old Link
 
-    //var recognizer = new builder.LuisRecognizer('https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/53ebb2e9-54bd-4962-8f4e-8996a1b59e1e?subscription-key=007489717d0d4ad8a05fcb492688d7f9&verbose=true&timezoneOffset=0&q=');
     bot.recognizer(recognizer);
 
     //Matches the user's conversation to the bot and starts the WelcomeIntentDialog.
@@ -38,10 +37,11 @@ exports.startDialog = function (bot) {
                             var toCurrency = session.message.value.destinationCurrency;
                             var currencyValue = session.message.value.number;
                             var equivalentValue;
+
                             currency.getExchangeRatesList(session, function (currencyList, exchangeRates) {
 
                                 for (var dest in currencyList) {
-
+                                    
                                     if (toCurrency == currencyList[dest]) {
                                         equivalentValue = exchangeRates[dest];
                                         equivalentValue *= currencyValue;
@@ -332,7 +332,8 @@ exports.startDialog = function (bot) {
     });
     bot.dialog('GiveFeedback', [
 
-        function (session) {
+        function (session,args,next) {
+		session.dialogData.args = args || {};
             if (!session.conversationData["username"]) {
                 builder.Prompts.text(session, "Please enter a username so we can identify you. This information will not be used for commercial purposes.");
             } else {
@@ -383,6 +384,7 @@ exports.startDialog = function (bot) {
                 }
                 
             }
+            
         }
         ]).triggerAction({
         matches: 'HelpIntent'

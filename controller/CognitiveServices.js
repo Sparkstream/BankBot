@@ -20,7 +20,7 @@ exports.getFeedback = function (session,feedback) {
         }
     },function(error,response,body){
         if(checkResponse(body) == "successful"){
-            var rating = (body.documents[0].score)*100;
+            var rating = ((body.documents[0].score)*100);
             if(rating>=75){
                 session.send("I'm glad you enjoyed this experience.");
             }else if(rating>=50 && rating<=70){

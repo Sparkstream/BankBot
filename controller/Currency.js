@@ -4,23 +4,21 @@ var luis = require('./LuisDialog');
 exports.displayAvailableCurrencies = function getExchangeRates(session, callback) {
 
     var url = 'https://api.fixer.io/latest';
-    rest.getExchangeRates(url, session, getExchangeRateResponseHandler(callback, session))
+    rest.getExchangeRates(url, session, getExchangeRateResponseHandler(callback,session))
 
 };
 
-function getExchangeRateResponseHandler(callback, session) {
+function getExchangeRateResponseHandler(callback,session) {
     return function (message, session) {
         var exchangeRateResponse = JSON.parse(message);
         var allCurrencies = [];
-        var limit = 0;
+        
         for (var index in exchangeRateResponse.rates) {
-            if (limit < 5) {
-                allCurrencies.push(index);
-            }
-            limit++;
+            allCurrencies.push(index);
+            
         }
 
-        callback(allCurrencies, session);
+        callback(allCurrencies,session);
 
     }
 }
@@ -37,13 +35,9 @@ function exchangeRateValues(callback) {
         var exchangeRateResponse = JSON.parse(message);
         var allCurrencies = [];
         var exchangeRates = [];
-        var limit = 5;
         for (var index in exchangeRateResponse.rates) {
-            if (limit < 5) {
-                allCurrencies.push(index);
-                exchangeRates.push(exchangeRateResponse.rates[index]);
-            }
-            limit++;
+            allCurrencies.push(index);
+            exchangeRates.push(exchangeRateResponse.rates[index]);
         }
 
         callback(allCurrencies, exchangeRates);
@@ -73,35 +67,35 @@ function handleCurrencyResponse(message, session, username) {
 
     for (var object in baseCurrencyResponse) {
         var usernameRegistered = baseCurrencyResponse[object].username;
-        if (usernameRegistered) {
+        if(usernameRegistered){
             if (username.toLowerCase() == usernameRegistered.toLowerCase()) {
-                baseCurrencies.push(baseCurrencyResponse[object].baseCurrency);
+               baseCurrencies.push(baseCurrencyResponse[object].baseCurrency);
             }
         }
     }
-    if (baseCurrencies.length == 0) {
+    if(baseCurrencies.length == 0){
         session.send("You have not set any base currencies.");
-    } else {
+    }else{
         session.send("Hi %s, your base currencies are currently set to %s", username, baseCurrencies);
     }
 }
 
-exports.deleteBaseCurrency = function getBaseCurrency(session, username, baseCurrency) {
-
-    var url = 'https://contosobankbot0.azurewebsites.net/tables/BankBot';
-    rest.getBaseCurrency(session, url, username, function (message, session, username) {
-        var baseCurrencyList = JSON.parse(message);
-        for (var index in baseCurrencyList) {
-            if ((baseCurrencyList[index].baseCurrency.toLowerCase() === baseCurrency.toLowerCase()) && (baseCurrencyList[index].username.toLowerCase() === username.toLowerCase())) {
-                console.log(baseCurrencyList[index]);
-                rest.deleteBaseCurrency(url, session, username, baseCurrency, baseCurrencyList[index].id, handleDeleteCurrencyResponse);
+exports.deleteBaseCurrency = function getBaseCurrency(session, username,baseCurrency) {
+    
+        var url = 'https://contosobankbot0.azurewebsites.net/tables/BankBot';
+        rest.getBaseCurrency(session, url, username, function(message,session,username){
+            var baseCurrencyList =JSON.parse(message);
+            for(var index in baseCurrencyList){
+                if((baseCurrencyList[index].baseCurrency.toLowerCase() === baseCurrency.toLowerCase()) && (baseCurrencyList[index].username.toLowerCase() === username.toLowerCase())){
+                    console.log(baseCurrencyList[index]);
+                    rest.deleteBaseCurrency(url,session,username,baseCurrency,baseCurrencyList[index].id,handleDeleteCurrencyResponse);
+                }
             }
-        }
 
-    });
-
+        });
+    
 };
 
-function handleDeleteCurrencyResponse(body, session, username, baseCurrency) {
+function handleDeleteCurrencyResponse(body,session,username,baseCurrency){
     console.log('Delete successful');
 }

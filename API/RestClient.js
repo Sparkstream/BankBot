@@ -33,7 +33,7 @@ exports.postBaseCurrency = function postData(url,username,baseCurrency){
         if(!err && response.statusCode === 200){
             console.log(body);
         }else{
-            console.log(error);
+            console.log(err);
         }
     })
 };
