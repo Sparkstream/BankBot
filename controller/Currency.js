@@ -12,22 +12,24 @@ function getExchangeRateResponseHandler(callback,session) {
     return function (message, session) {
         var exchangeRateResponse = JSON.parse(message);
         var allCurrencies = [];
-        var exchangeRates = [];
+        
         for (var index in exchangeRateResponse.rates) {
             allCurrencies.push(index);
-            exchangeRates.push(exchangeRateResponse.rates[index]);
+            
         }
 
-        callback(allCurrencies, exchangeRates,session);
+        callback(allCurrencies,session);
 
     }
 }
+
 exports.getExchangeRatesList = function getValues(session, callback, base) {
 
     var url = 'https://api.fixer.io/latest?base=' + base;
     rest.getExchangeRates(url, session, exchangeRateValues(callback));
 
 };
+
 function exchangeRateValues(callback) {
     return function (message, session) {
         var exchangeRateResponse = JSON.parse(message);

@@ -19,9 +19,10 @@ server.post('/api/messages', connector.listen());
 // Receive messages from the user and respond by echoing each message back (prefixed with 'You said:')
 var bot = new builder.UniversalBot(connector, function (session) {
     
-    session.send("Sorry I do not understand what %s means. Please try again.",session.message.text);
+    //session.send("Sorry I do not understand what %s means. Please try again.",session.message.text);
     
     //session.send("You said: %s", session.message.text);
 });
+
 
 luis.startDialog(bot);
